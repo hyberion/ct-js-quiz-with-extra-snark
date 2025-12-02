@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Fundamentals Quiz</title>
+  <style>
+    /* === BASE STYLES === */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #18181b;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    /* === UTILITY CLASS - hidden toggle === */
+    .hidden {
+      display: none;
+    }
+
+    /* === CONTAINER STYLES === */
+    .container {
+      background-color: #27272a;
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      padding: 2rem;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* === TYPOGRAPHY === */
+    h1 {
+      color: #ffffff;
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      color: #ffffff;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      color: #a1a1aa;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .description {
+      color: #71717a;
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+    }
+
+    .warning {
+      color: #52525b;
+      font-size: 0.75rem;
+      font-style: italic;
+      margin-top: 2rem;
+      padding: 0 1rem;
+    }
+
+    /* === HEADER ROW === */
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-text {
+      color: #71717a;
+      font-size: 0.875rem;
+    }
+
+    .score-text {
+      color: #34d399;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* === QUESTION === */
+    #question-text {
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    /* === OPTIONS CONTAINER === */
+    #options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* === OPTION BUTTONS === */
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #52525b;
+      background-color: #3f3f46;
+      color: #e4e4e7;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: #71717a;
+      background-color: #52525b;
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    /* === OPTION STATES - correct/incorrect feedback === */
+    .option-btn.correct {
+      background-color: rgba(6, 78, 59, 0.5);
+      border-color: #10b981;
+      color: #a7f3d0;
+    }
+
+    .option-btn.incorrect {
+      background-color: rgba(127, 29, 29, 0.5);
+      border-color: #ef4444;
+      color: #fecaca;
+    }
+
+    .option-btn.dimmed {
+      background-color: rgba(63, 63, 70, 0.5);
+      border-color: #52525b;
+      color: #71717a;
+    }
+
+    /* === FEEDBACK BOX === */
+    #feedback-container {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    #feedback-container.correct {
+      background-color: rgba(6, 78, 59, 0.3);
+      border: 1px solid #047857;
+    }
+
+    #feedback-container.incorrect {
+      background-color: rgba(127, 29, 29, 0.3);
+      border: 1px solid #b91c1c;
+    }
+
+    #feedback-text {
+      font-size: 0.875rem;
+    }
+
+    #feedback-text.correct {
+      color: #6ee7b7;
+    }
+
+    #feedback-text.incorrect {
+      color: #fca5a5;
+    }
+
+    /* === BUTTONS === */
+    .btn {
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+      background-color: #059669;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: #10b981;
+    }
+
+    .btn-secondary {
+      background-color: #52525b;
+      color: #ffffff;
+      width: 100%;
+    }
+
+    .btn-secondary:hover {
+      background-color: #71717a;
+    }
+
+    /* === SCORE DISPLAY === */
+    .score-display {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.25rem;
+    }
+
+    .score-percent {
+      color: #71717a;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    .grade-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .grade-message {
+      color: #a1a1aa;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .pass-status {
+      font-size: 0.875rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .pass-status.pass {
+      color: #10b981;
+    }
+
+    .pass-status.fail {
+      color: #ef4444;
+    }
+
+    /* === CLASSIFICATION MATRIX === */
+    .matrix {
+      background-color: #18181b;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+      font-size: 0.75rem;
+      color: #71717a;
+    }
+
+    .matrix-title {
+      color: #a1a1aa;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .matrix-row {
+      margin-bottom: 0.25rem;
+    }
+
+    .grade-90 { color: #34d399; }
+    .grade-80 { color: #facc15; }
+    .grade-70 { color: #fb923c; }
+    .grade-60 { color: #f97316; }
+    .grade-0 { color: #f87171; }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== START SCREEN ==================== -->
+  <div id="start-container" class="container">
+    <h1>JavaScript Fundamentals</h1>
+    <p class="subtitle">A Quiz for People Who've Suffered Enough</p>
+    <p class="description">7 questions about the language that runs the internet despite everyone's best efforts.</p>
+    <button id="start-button" class="btn btn-primary">Let's Get This Over With</button>
+    <p class="warning">Failure to pass this quiz with an approved score will result in severe re-education and applicable physical treatment as determined by a spin of the "Wheel of Deserved Retribution." All hail the Omnissiah.</p>
+  </div>
+
+  <!-- ==================== QUIZ SCREEN ==================== -->
+  <div id="quiz-container" class="container hidden">
+    <div class="header-row">
+      <span id="progress-text" class="progress-text">Question 1 of 7</span>
+      <span id="score-display" class="score-text">Score: 0</span>
+    </div>
+    <p id="question-text"></p>
+    <div id="options-container"></div>
+    <div id="feedback-container" class="hidden">
+      <p id="feedback-text"></p>
+    </div>
+    <button id="next-button" class="btn btn-secondary hidden">Next Question</button>
+  </div>
+
+  <!-- ==================== SCORE SCREEN ==================== -->
+  <div id="score-container" class="container hidden">
+    <h2>Assessment Complete</h2>
+    <p id="pass-status" class="pass-status"></p>
+    <p id="final-score" class="score-display"></p>
+    <p id="final-percent" class="score-percent"></p>
+    <p id="grade-text" class="grade-text"></p>
+    <p id="grade-message" class="grade-message"></p>
+    <div class="matrix">
+      <p class="matrix-title">Classification Matrix:</p>
+      <p class="matrix-row"><span class="grade-90">90-100%</span> — Minimal Acceptable Result</p>
+      <p class="matrix-row"><span class="grade-80">80-89%</span> — Minimal Tolerable Failure</p>
+      <p class="matrix-row"><span class="grade-70">70-79%</span> — Insufficient Success</p>
+      <p class="matrix-row"><span class="grade-60">60-69%</span> — Dismal Result</p>
+      <p class="matrix-row"><span class="grade-0">0-59%</span> — Exceptional Failure</p>
+    </div>
+    <button id="restart-button" class="btn btn-secondary">Petition for Reassessment</button>
+  </div>
+
+  <script>
+    // ==================== QUIZ DATA (Array of Objects) ====================
+    const quizData = [
+      {
+        question: "What does 'const' actually mean in JavaScript?",
+        options: [
+          "The variable is completely immutable forever",
+          "The binding can't be reassigned, but objects/arrays can still be mutated",
+          "It's just 'var' but fancier",
+          "Nobody really knows, we just use it to look professional"
+        ],
+        answer: 1,
+        correctSnark: "Look at you, understanding the nuance! const isn't about immutability, it's about reassignment. Gold star.",
+        wrongSnark: "Ah, the classic const confusion. It prevents reassignment, not mutation. Your object's properties are still fair game for chaos."
+      },
+      {
+        question: "What will console.log(typeof null) output?",
+        options: ["'null'", "'undefined'", "'object'", "'nothing'"],
+        answer: 2,
+        correctSnark: "You know about JavaScript's most famous bug! typeof null returning 'object' has been wrong since 1995 and we're stuck with it forever.",
+        wrongSnark: "It's 'object'. Yes, really. This is a bug from 1995 that can never be fixed because it would break the internet. Welcome to JavaScript."
+      },
+      {
+        question: "What's the difference between '==' and '==='?",
+        options: [
+          "Nothing, one just has more characters",
+          "'==' compares values, '===' compares values AND types",
+          "'===' is deprecated",
+          "'==' is faster because it's shorter"
+        ],
+        answer: 1,
+        correctSnark: "Correct! Always use === unless you have a very specific reason to let JavaScript's type coercion make decisions for you. (Spoiler: you don't.)",
+        wrongSnark: "=== checks both value AND type. == will tell you that '5' == 5 is true, which is the kind of chaos we don't need in our lives."
+      },
+      {
+        question: "What does Array.prototype.map() return?",
+        options: [
+          "undefined, it modifies the original array",
+          "A new array with transformed elements",
+          "A boolean indicating success",
+          "The original array, but angrier"
+        ],
+        answer: 1,
+        correctSnark: "Nailed it. map() returns a NEW array and leaves the original untouched. Immutability enthusiasts everywhere rejoice.",
+        wrongSnark: "map() returns a brand new array with your transformations. It doesn't mutate the original. This is why functional programmers won't stop talking about it."
+      },
+      {
+        question: "What is a closure?",
+        options: [
+          "When you close your laptop in frustration",
+          "A function that remembers variables from its outer scope",
+          "A way to end a JavaScript file",
+          "A deprecated feature from ES5"
+        ],
+        answer: 1,
+        correctSnark: "You actually understand closures! This puts you ahead of like 60% of interview candidates. Seriously.",
+        wrongSnark: "A closure is a function that 'closes over' variables from its outer scope. It remembers them even after that outer function has finished. It's weird and powerful."
+      },
+      {
+        question: "What will [1, 2, 3].push(4) return?",
+        options: ["[1, 2, 3, 4]", "4", "undefined", "true"],
+        answer: 1,
+        correctSnark: "Correct! push() returns the NEW LENGTH of the array, not the array itself. This trips up everyone at least once.",
+        wrongSnark: "Trick question energy: push() returns the new LENGTH of the array (4), not the array itself. The array IS modified, but the return value is just a number."
+      },
+      {
+        question: "What's the event loop?",
+        options: [
+          "A for loop that handles events",
+          "The mechanism that handles async operations and callbacks",
+          "A React hook",
+          "The thing that makes your code slow"
+        ],
+        answer: 1,
+        correctSnark: "You know about the event loop! This is legitimately useful knowledge for understanding why your async code does weird things.",
+        wrongSnark: "The event loop is how JavaScript handles async operations - it processes the call stack, then checks the callback queue. It's why setTimeout(fn, 0) doesn't run immediately."
+      }
+    ];
+
+    // ==================== STATE VARIABLES ====================
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let hasAnswered = false;
+
+    // ==================== DOM ELEMENT REFERENCES ====================
+    // Using getElementById and querySelector as per course requirements
+    const startContainer = document.getElementById('start-container');
+    const quizContainer = document.getElementById('quiz-container');
+    const scoreContainer = document.getElementById('score-container');
+    
+    const startButton = document.getElementById('start-button');
+    const nextButton = document.getElementById('next-button');
+    const restartButton = document.getElementById('restart-button');
+    
+    const progressText = document.getElementById('progress-text');
+    const scoreDisplay = document.getElementById('score-display');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const feedbackContainer = document.getElementById('feedback-container');
+    const feedbackText = document.getElementById('feedback-text');
+    
+    const passStatus = document.getElementById('pass-status');
+    const finalScore = document.getElementById('final-score');
+    const finalPercent = document.getElementById('final-percent');
+    const gradeText = document.getElementById('grade-text');
+    const gradeMessage = document.getElementById('grade-message');
+
+    // ==================== HELPER FUNCTION: Get Score Data ====================
+    function getScoreData(pct) {
+      if (pct >= 90) {
+        return {
+          grade: "MINIMAL ACCEPTABLE RESULT",
+          pass: true,
+          color: "grade-90",
+          message: "Score engravers will be dispatched. Please shower before arrival."
+        };
+      } else if (pct >= 80) {
+        return {
+          grade: "MINIMAL TOLERABLE FAILURE",
+          pass: false,
+          color: "grade-80",
+          message: "Additional study sessions will be enforced by armed tutors."
+        };
+      } else if (pct >= 70) {
+        return {
+          grade: "INSUFFICIENT SUCCESS",
+          pass: false,
+          color: "grade-70",
+          message: "Please report for surgical exclusion."
+        };
+      } else if (pct >= 60) {
+        return {
+          grade: "DISMAL RESULT",
+          pass: false,
+          color: "grade-60",
+          message: "We are both angry and disappointed. Please mark voluntary toes with the appropriate marker."
+        };
+      } else {
+        return {
+          grade: "EXCEPTIONAL FAILURE",
+          pass: false,
+          color: "grade-0",
+          message: "Tutors will be dispatched. Please shave the areas listed in the student manual on page 145 to make electrode placement easier."
+        };
+      }
+    }
+
+    // ==================== FUNCTION: Load Question ====================
+    // Dynamically creates option buttons using createElement and appendChild
+    function loadQuestion() {
+      const currentQuestion = quizData[currentQuestionIndex];
+      
+      // Update progress and score display
+      progressText.textContent = 'Question ' + (currentQuestionIndex + 1) + ' of ' + quizData.length;
+      scoreDisplay.textContent = 'Score: ' + score;
+      
+      // Set question text using textContent
+      questionText.textContent = currentQuestion.question;
+      
+      // Clear previous options using innerHTML
+      optionsContainer.innerHTML = '';
+      
+      // Hide feedback and next button
+      feedbackContainer.classList.add('hidden');
+      nextButton.classList.add('hidden');
+      
+      // Reset answered state
+      hasAnswered = false;
+      
+      // Create option buttons using a FOR loop (as per course requirements)
+      for (let i = 0; i < currentQuestion.options.length; i++) {
+        const option = currentQuestion.options[i];
+        
+        // Create button element
+        const optionButton = document.createElement('button');
+        optionButton.textContent = option;
+        optionButton.classList.add('option-btn');
+        optionButton.dataset.index = i; // Store index in data attribute
+        
+        // Add event listener using addEventListener (as per course requirements)
+        optionButton.addEventListener('click', function() {
+          selectOption(i);
+        });
+        
+        // Append to container using appendChild
+        optionsContainer.appendChild(optionButton);
+      }
+    }
+
+    // ==================== FUNCTION: Handle Option Selection ====================
+    function selectOption(selectedIndex) {
+      // Prevent multiple selections
+      if (hasAnswered) {
+        return;
+      }
+      hasAnswered = true;
+      
+      const currentQuestion = quizData[currentQuestionIndex];
+      const isCorrect = selectedIndex === currentQuestion.answer;
+      
+      // Update score if correct
+      if (isCorrect) {
+        score = score + 1;
+        scoreDisplay.textContent = 'Score: ' + score;
+      }
+      
+      // Get all option buttons using querySelectorAll
+      const optionButtons = document.querySelectorAll('.option-btn');
+      
+      // Loop through buttons to apply correct/incorrect/dimmed styles
+      // Using a FOR loop as per course requirements
+      for (let i = 0; i < optionButtons.length; i++) {
+        const btn = optionButtons[i];
+        btn.disabled = true; // Disable all buttons
+        
+        if (i === currentQuestion.answer) {
+          // This is the correct answer - add correct class
+          btn.classList.add('correct');
+        } else if (i === selectedIndex) {
+          // User selected this wrong answer - add incorrect class
+          btn.classList.add('incorrect');
+        } else {
+          // Other unselected options - dim them
+          btn.classList.add('dimmed');
+        }
+      }
+      
+      // Show feedback
+      feedbackContainer.classList.remove('hidden');
+      feedbackContainer.classList.remove('correct', 'incorrect');
+      feedbackText.classList.remove('correct', 'incorrect');
+      
+      if (isCorrect) {
+        feedbackContainer.classList.add('correct');
+        feedbackText.classList.add('correct');
+        feedbackText.textContent = currentQuestion.correctSnark;
+      } else {
+        feedbackContainer.classList.add('incorrect');
+        feedbackText.classList.add('incorrect');
+        feedbackText.textContent = currentQuestion.wrongSnark;
+      }
+      
+      // Show next button with appropriate text
+      nextButton.classList.remove('hidden');
+      if (currentQuestionIndex < quizData.length - 1) {
+        nextButton.textContent = 'Next Question →';
+      } else {
+        nextButton.textContent = 'See Results';
+      }
+    }
+
+    // ==================== FUNCTION: Go to Next Question ====================
+    function goToNextQuestion() {
+      if (currentQuestionIndex < quizData.length - 1) {
+        currentQuestionIndex = currentQuestionIndex + 1;
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    // ==================== FUNCTION: Show Results ====================
+    function showResults() {
+      // Hide quiz, show score screen using classList
+      quizContainer.classList.add('hidden');
+      scoreContainer.classList.remove('hidden');
+      
+      // Calculate percentage
+      const pct = Math.round((score / quizData.length) * 100);
+      const scoreData = getScoreData(pct);
+      
+      // Update score display
+      finalScore.textContent = score + ' / ' + quizData.length;
+      finalPercent.textContent = pct + '%';
+      
+      // Update pass/fail status
+      if (scoreData.pass) {
+        passStatus.textContent = '[ PASSED ]';
+        passStatus.classList.remove('fail');
+        passStatus.classList.add('pass');
+        restartButton.textContent = 'Attempt Further Glory';
+      } else {
+        passStatus.textContent = '[ FAILED ]';
+        passStatus.classList.remove('pass');
+        passStatus.classList.add('fail');
+        restartButton.textContent = 'Petition for Reassessment';
+      }
+      
+      // Update grade text with appropriate color
+      gradeText.textContent = scoreData.grade;
+      gradeText.className = 'grade-text ' + scoreData.color;
+      
+      // Update grade message
+      gradeMessage.textContent = scoreData.message;
+    }
+
+    // ==================== FUNCTION: Restart Quiz ====================
+    function restartQuiz() {
+      // Reset state variables
+      currentQuestionIndex = 0;
+      score = 0;
+      hasAnswered = false;
+      
+      // Hide score, show quiz using classList
+      scoreContainer.classList.add('hidden');
+      quizContainer.classList.remove('hidden');
+      
+      // Load first question
+      loadQuestion();
+    }
+
+    // ==================== FUNCTION: Start Quiz ====================
+    function startQuiz() {
+      // Hide start screen, show quiz using classList
+      startContainer.classList.add('hidden');
+      quizContainer.classList.remove('hidden');
+      
+      // Load first question
+      loadQuestion();
+    }
+
+    // ==================== EVENT LISTENERS ====================
+    // Using addEventListener as per course requirements
+    startButton.addEventListener('click', startQuiz);
+    nextButton.addEventListener('click', goToNextQuestion);
+    restartButton.addEventListener('click', restartQuiz);
+  </script>
+
+</body>
+</html>
